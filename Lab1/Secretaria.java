@@ -136,7 +136,8 @@ public class Secretaria {
                 String linha = aluno.getNome() + ";" +
                         aluno.getCodigoPessoa() + ";" +
                         aluno.getCpf() + ";" +
-                        aluno.getSenha() + ";";
+                        aluno.getSenha() + ";" +
+                        aluno.getA_mensalidade() + ";";
 
                 List<Disciplina> obrigatorias = aluno.getDisciplinasObrigatorias();
                 linha += obrigatorias.size() + ";";
@@ -288,13 +289,14 @@ public class Secretaria {
                     String codigoPessoa = dados[1];
                     String cpf = dados[2];
                     String senha = dados[3];
-                    int totalObrigatorias = Integer.parseInt(dados[4]);
-                    int totalOptativas = Integer.parseInt(dados[6]);
+                    Double mensalidade = Double.parseDouble(dados[4]);
+                    int totalObrigatorias = Integer.parseInt(dados[5]);
+                    int totalOptativas = Integer.parseInt(dados[7]);
 
                     Aluno aluno = new Aluno(nome, codigoPessoa, cpf, senha);
 
-                    if (totalObrigatorias > 0 && dados.length > 5) {
-                        String[] nomesObrigatorias = dados[5].split(",");
+                    if (totalObrigatorias > 0 && dados.length > 7) {
+                        String[] nomesObrigatorias = dados[7].split(",");
                         for (String nomeDisciplina : nomesObrigatorias) {
                             Disciplina disciplina = buscarDisciplinaPorNome(nomeDisciplina);
                             if (disciplina != null) {
@@ -303,8 +305,8 @@ public class Secretaria {
                         }
                     }
 
-                    if (totalOptativas > 0 && dados.length > 7) {
-                        String[] nomesOptativas = dados[7].split(",");
+                    if (totalOptativas > 0 && dados.length > 8) {
+                        String[] nomesOptativas = dados[8].split(",");
                         for (String nomeDisciplina : nomesOptativas) {
                             Disciplina disciplina = buscarDisciplinaPorNome(nomeDisciplina);
                             if (disciplina != null) {

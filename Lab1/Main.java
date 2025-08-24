@@ -420,6 +420,7 @@ public class Main {
             System.out.println("3. Cancelar matrícula");
             System.out.println("4. Ver perfil");
             System.out.println("5. Ver cursos disponíveis");
+            System.out.println("6. Ver preço da mensalidade");
             System.out.println("0. Voltar ao menu principal");
             System.out.print("Digite a opção: ");
 
@@ -466,6 +467,9 @@ public class Main {
                         System.out.println("  Disciplinas: " + cursoD.getDisciplinas().size());
                     }
                     break;
+                case 6:
+                    Cobranca cobranca = new Cobranca(aluno);
+                    gerarCobrancas(aluno, cobranca, secretaria);
                 case 0:
                     System.out.println("Voltando ao menu principal...");
                     break;
@@ -595,5 +599,12 @@ public class Main {
 
         cursoSelecionado.setDisciplina(disciplina);
         System.out.println("Disciplina '" + disciplina.getNome() + "' adicionada ao curso '" + cursoSelecionado.getNome() + "' com sucesso!");
+    }
+
+    private static void gerarCobrancas(Aluno aluno, Cobranca cobranca, Secretaria secretaria){
+        double valor = cobranca.gerarCobranca(aluno);
+        System.out.println("Aluno: " + aluno.getNome() + "o valor da sua mensalidade será: " + valor);
+        aluno.setMensalidade(valor);
+        secretaria.salvarDadosEmTxt();
     }
 }

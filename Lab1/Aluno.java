@@ -8,15 +8,21 @@ public class Aluno extends Usuario {
     private List<Disciplina> A_disciplinasObrigatorias;
     private List<Disciplina> A_disciplinasOptativas;
     private Disciplina A_disciplina;
+    private double A_mensalidade;
 
-    public Aluno(String nome, String codigoPessoa, String cpf, String senha){
+    public Aluno(String nome, String codigoPessoa, String cpf, String senha) {
         super(nome, codigoPessoa, cpf, senha);
         this.A_disciplinasObrigatorias = new ArrayList<Disciplina>();
         this.A_disciplinasOptativas = new ArrayList<Disciplina>();
+        this.A_mensalidade = 0.0;
     }
 
     public List<Disciplina> getDisciplinasObrigatorias() {
         return A_disciplinasObrigatorias;
+    }
+
+    public double getA_mensalidade() {
+        return A_mensalidade;
     }
 
     public void setDisciplinasObrigatorias(Disciplina disciplina) {
@@ -61,4 +67,7 @@ public class Aluno extends Usuario {
         }
     }
 
+    public double setMensalidade(double mensalidade) {
+        return this.A_mensalidade = mensalidade;
+    }
 }

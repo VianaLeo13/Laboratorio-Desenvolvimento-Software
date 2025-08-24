@@ -17,8 +17,7 @@ public class Cobranca {
         this.aluno = aluno;
     }
 
-
-    public double gerarCobranca() {
+    public double gerarCobranca(Aluno aluno) {
         return Stream.concat(
                         aluno.getDisciplinasObrigatorias().stream(),
                         aluno.getDisciplinasOptativas().stream()
