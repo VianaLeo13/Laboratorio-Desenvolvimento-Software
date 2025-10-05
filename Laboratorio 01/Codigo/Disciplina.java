@@ -93,7 +93,12 @@ public class Disciplina{
         }
     }
 
+    // aqui o método “setAluno” na verdade adiciona um aluno à lista, um nome mais intuitivo como “adicionarAluno” deixaria o código mais fácil de entender
+
+    // vc já tem as constantes MIN_ALUNO e MAX_ALUNO, mas só está usando a máxima, poderia aproveitar o MIN_ALUNO para validar se a disciplina pode realmente ser ativada
+
+    // o contador totalAlunos é atualizado manualmente em vários lugares, uma alternativa seria calcular esse valor com `alunos.size()` para evitar inconsistências.
+
+    // seria interessante mover a lógica de ativação/desativação de disciplina para métodos específicos, tipo “ativarDisciplina()” e “desativarDisciplina()”, isso deixaria o código mais organizado e com responsabilidades bem definidas
 }
 
-
-//comentário apenas para abrir o pull request

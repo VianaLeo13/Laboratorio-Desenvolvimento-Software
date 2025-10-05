@@ -50,5 +50,3 @@ public abstract class Usuario {
         this.codigoPessoa = codigoPessoa;
     }
 }
-
-//comentário apenas para abrir o pull request
