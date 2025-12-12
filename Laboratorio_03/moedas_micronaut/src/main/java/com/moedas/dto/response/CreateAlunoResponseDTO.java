@@ -19,6 +19,6 @@ public class CreateAlunoResponseDTO {
     private String rg;
     private String nome;
     private String email;
-    private String senha;
     private String endereco;
+    //Remove senha do DTO de response por segunraçança
 }

@@ -20,8 +20,7 @@ import java.util.List;
 @Secured(SecurityRule.IS_AUTHENTICATED)
 @RequiredArgsConstructor
 public class AlunoController {
-    private final TransacaoRepository transacaoRepository;
-    private final AlunoRepository alunoRepository;
+    //Remove AlunoRepository e TransacaoRepository, usa apenas AlunoService
     private final AlunoService alunoService;
 
     @Post("/cadastrar")
@@ -80,16 +79,15 @@ public class AlunoController {
         }
     }
 
-    @Get("/{id}/extrato-transacoes") // 324 app.js
+    @Get("/{id}/extrato-transacoes")
     @Secured(SecurityRule.IS_ANONYMOUS)
     public List<Transacao> getExtratoTransacoes(@PathVariable Long id) {
-        return transacaoRepository.findByAlunoIdOrderByDataHoraDesc(id);
+        return alunoService.getExtratoTransacoes(id);
     }
 
     @Get("/{id}/saldo")
     @Secured(SecurityRule.IS_ANONYMOUS)
     public Double getSaldo(@PathVariable Long id) {
-        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Error"));
-        return aluno.getSaldoMoedas();
+        return alunoService.getSaldo(id);
     }
 }

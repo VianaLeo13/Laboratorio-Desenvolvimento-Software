@@ -4,19 +4,25 @@ import com.moedas.dto.request.CreateAlunoRequestDTO;
 import com.moedas.dto.request.UpdateAlunoRequestDTO;
 import com.moedas.dto.response.CreateAlunoResponseDTO;
 import com.moedas.entities.Aluno;
+import com.moedas.entities.Transacao;
+import com.moedas.mapper.AlunoMapper;
 import com.moedas.repositories.AlunoRepository;
+import com.moedas.repositories.TransacaoRepository;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
-import java.util.*;
+import java.util.List;
 
 @Singleton
 @RequiredArgsConstructor
 public class AlunoService {
 
+    //Adiciona repositórios necessários, ajusta DTOs de AlunoResponse para não retornar a senha diretamente e adiciona mapper ao invés da conversão manual
+
     private final AlunoRepository alunoRepository;
+    private final TransacaoRepository transacaoRepository;
 
     public CreateAlunoResponseDTO create(CreateAlunoRequestDTO createAlunoRequestDTO) {
         if (createAlunoRequestDTO.getCpf() == null || createAlunoRequestDTO.getCpf().trim().isEmpty()) {
@@ -31,9 +37,9 @@ public class AlunoService {
             throw new IllegalArgumentException("Senha é obrigatória");
         }
 
-        Aluno aluno = createEntity(createAlunoRequestDTO);
+        Aluno aluno = AlunoMapper.toEntity(createAlunoRequestDTO);
         aluno = alunoRepository.save(aluno);
-        return createDTO(aluno);
+        return AlunoMapper.toDto(aluno);
     }
 
     public CreateAlunoResponseDTO update(UpdateAlunoRequestDTO dto, long id) {
@@ -51,7 +57,7 @@ public class AlunoService {
 
         alunoRepository.update(aluno);
 
-        return createDTO(aluno);
+        return AlunoMapper.toDto(aluno);
     }
 
     public CreateAlunoResponseDTO viewPerfil(long id){
@@ -59,21 +65,15 @@ public class AlunoService {
                 .orElseThrow(() -> new HttpStatusException(HttpStatus.NOT_FOUND, "Aluno com o id inexistente"));
 
         System.out.println(aluno.getEmail());
-        return createDTO(aluno);
+        return AlunoMapper.toDto(aluno);
     }
 
     public List<CreateAlunoResponseDTO> lista(){
         List<Aluno> alunos = alunoRepository.findAll();
 
         return alunos.stream()
-                .map(aluno -> CreateAlunoResponseDTO.builder()
-                        .id(aluno.getId())
-                        .cpf(aluno.getCpf())
-                        .email(aluno.getEmail())
-                        .rg(aluno.getRg())
-                        .senha(aluno.getSenha())
-                        .endereco(aluno.getEndereco())
-                        .nome(aluno.getNome()).build()).toList();
+                .map(AlunoMapper::toDto)
+                .toList();
     }
 
     public void delete(long id) {
@@ -83,26 +83,13 @@ public class AlunoService {
         alunoRepository.deleteById(id);
     }
 
-    private Aluno createEntity(CreateAlunoRequestDTO createAlunoRequestDTO) {
-        return Aluno.builder()
-                .nome(createAlunoRequestDTO.getNome())
-                .cpf(createAlunoRequestDTO.getCpf())
-                .email(createAlunoRequestDTO.getEmail())
-                .senha(createAlunoRequestDTO.getSenha())
-                .rg(createAlunoRequestDTO.getRg())
-                .endereco(createAlunoRequestDTO.getEndereco())
-                .build();
+    public List<Transacao> getExtratoTransacoes(Long id) {
+        return transacaoRepository.findByAlunoIdOrderByDataHoraDesc(id);
     }
 
-    private CreateAlunoResponseDTO createDTO(Aluno aluno) {
-        return CreateAlunoResponseDTO.builder()
-                .id(aluno.getId())
-                .email(aluno.getEmail())
-                .senha(aluno.getSenha())
-                .nome(aluno.getNome())
-                .endereco(aluno.getEndereco())
-                .rg(aluno.getRg())
-                .cpf(aluno.getCpf())
-                .build();
+    public Double getSaldo(Long id) {
+        Aluno aluno = alunoRepository.findById(id)
+            .orElseThrow(() -> new HttpStatusException(HttpStatus.NOT_FOUND, "Aluno não encontrado"));
+        return aluno.getSaldoMoedas();
     }
 }
