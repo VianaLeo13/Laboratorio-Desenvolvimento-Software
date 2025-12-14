@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Moeda Estudantil</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+</head>
+<body class="video-bg">
+    <!-- Vídeo de Fundo -->
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="imagens/Time Lapse - PUC Minas Coração Eucarístico.mp4" type="video/mp4">
+            <!-- Fallback para navegadores que não suportam vídeo -->
+            Seu navegador não suporta vídeos HTML5.
+        </video>
+    </div>
+    
+    <!-- Overlay para melhorar legibilidade -->
+    <div class="video-overlay"></div>
+
+    <!-- Container de Autenticação -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="login-header" style="text-align: center; margin-bottom: 2rem;">
+                <img src="imagens/Moedalogo.png" alt="Moeda Estudantil Logo" style="max-width: 120px; margin-bottom: 1rem;">
+                <h1>Bem-vindo</h1>
+                <p style="color: var(--text-light); margin-top: 0.5rem;">Faça login para continuar</p>
+            </div>
+
+            <div id="error-message" class="error-message" style="background: #fee; color: #c33; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; text-align: center; display: none;"></div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="seu@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" required placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="login-btn">Entrar</button>
+            </form>
+
+            <div class="login-links" style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                <p style="color: var(--text-light); margin-bottom: 0.5rem;">Não tem uma conta?</p>
+                <a href="cadastro.html" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Cadastre-se aqui</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/config.js"></script>
+    <script src="scripts/video-background.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('login-form');
+            const loginBtn = document.getElementById('login-btn');
+            const errorMessage = document.getElementById('error-message');
+
+            // Se já estiver logado, redirecionar
+            if (AuthService.isAuthenticated()) {
+                window.location.href = 'vantagens.html';
+                return;
+            }
+
+            const showError = (message) => {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 5000);
+            };
+
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                loginBtn.disabled = true;
+                errorMessage.style.display = 'none';
+
+                const email = document.getElementById('email').value;
+                const senha = document.getElementById('senha').value;
+
+                const result = await AuthService.login(email, senha);
+
+                if (result.success) {
+                    // Redirecionar para vantagens após login bem-sucedido
+                    window.location.href = 'vantagens.html';
+                } else {
+                    showError(result.error || 'Erro ao fazer login. Verifique suas credenciais.');
+                    loginBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Veículos - Sistema de Aluguel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .veiculo-card {
+            transition: transform 0.3s ease;
+        }
+        .veiculo-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1 class="text-white">
+                        <i class="fas fa-car"></i> Cadastro de Veículos
+                    </h1>
+                    <a href="index.html" class="btn btn-outline-light">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulário de Cadastro -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-plus-circle"></i> Novo Veículo
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="cadastro-veiculo-form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="veiculo-placa" class="form-label">
+                                            <i class="fas fa-id-card"></i> Placa
+                                        </label>
+                                        <input type="text" class="form-control" id="veiculo-placa" required 
+                                               placeholder="ABC-1234" maxlength="8">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="veiculo-matricula" class="form-label">
+                                            <i class="fas fa-file-alt"></i> Matrícula
+                                        </label>
+                                        <input type="text" class="form-control" id="veiculo-matricula" required 
+                                               placeholder="Número da matrícula">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="veiculo-ano" class="form-label">
+                                            <i class="fas fa-calendar"></i> Ano
+                                        </label>
+                                        <input type="number" class="form-control" id="veiculo-ano" required 
+                                               placeholder="2023" min="1900" max="2030">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="veiculo-marca" class="form-label">
+                                            <i class="fas fa-tag"></i> Marca
+                                        </label>
+                                        <input type="text" class="form-control" id="veiculo-marca" required 
+                                               placeholder="Toyota, Honda, Ford...">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="veiculo-modelo" class="form-label">
+                                            <i class="fas fa-car-side"></i> Modelo
+                                        </label>
+                                        <input type="text" class="form-control" id="veiculo-modelo" required 
+                                               placeholder="Corolla, Civic, Focus...">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="veiculo-tipo-propriedade" class="form-label">
+                                            <i class="fas fa-building"></i> Tipo de Propriedade
+                                        </label>
+                                        <select class="form-select" id="veiculo-tipo-propriedade" required>
+                                            <option value="">Selecione o tipo</option>
+                                            <option value="CLIENTE">Cliente</option>
+                                            <option value="EMPRESA">Empresa</option>
+                                            <option value="BANCO">Banco</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-save"></i> Cadastrar Veículo
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Veículos -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-list"></i> Veículos Cadastrados
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="veiculos-list">
+                            <div class="text-center">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Carregando...</span>
+                                </div>
+                                <p class="mt-2">Carregando veículos...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div class="modal fade" id="confirmacaoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Ação</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmacao-texto">Tem certeza que deseja realizar esta ação?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmacao-botao">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição de Veículo -->
+    <div class="modal fade" id="editarVeiculoModal" tabindex="-1" aria-labelledby="editarVeiculoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarVeiculoModalLabel">
+                        <i class="fas fa-edit"></i> Editar Veículo
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editar-veiculo-form">
+                        <input type="hidden" id="edit-veiculo-id">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit-veiculo-placa" class="form-label">
+                                        <i class="fas fa-id-card"></i> Placa
+                                    </label>
+                                    <input type="text" class="form-control" id="edit-veiculo-placa" required
+                                           placeholder="ABC-1234" maxlength="8">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit-veiculo-matricula" class="form-label">
+                                        <i class="fas fa-file-alt"></i> Matrícula
+                                    </label>
+                                    <input type="text" class="form-control" id="edit-veiculo-matricula" required
+                                           placeholder="Número da matrícula">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="edit-veiculo-ano" class="form-label">
+                                        <i class="fas fa-calendar"></i> Ano
+                                    </label>
+                                    <input type="number" class="form-control" id="edit-veiculo-ano" required
+                                           placeholder="2023" min="1900" max="2030">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="edit-veiculo-marca" class="form-label">
+                                        <i class="fas fa-tag"></i> Marca
+                                    </label>
+                                    <input type="text" class="form-control" id="edit-veiculo-marca" required
+                                           placeholder="Toyota, Honda, Ford...">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="edit-veiculo-modelo" class="form-label">
+                                        <i class="fas fa-car-side"></i> Modelo
+                                    </label>
+                                    <input type="text" class="form-control" id="edit-veiculo-modelo" required
+                                           placeholder="Corolla, Civic, Focus...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit-veiculo-tipo-propriedade" class="form-label">
+                                        <i class="fas fa-building"></i> Tipo de Propriedade
+                                    </label>
+                                    <select class="form-select" id="edit-veiculo-tipo-propriedade" required>
+                                        <option value="">Selecione o tipo</option>
+                                        <option value="CLIENTE">Cliente</option>
+                                        <option value="EMPRESA">Empresa</option>
+                                        <option value="BANCO">Banco</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="salvar-edicao-btn" onclick="veiculoService.salvarEdicao()">
+                        <i class="fas fa-save"></i> Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição de Veículo -->
+    <div class="modal fade" id="editarVeiculoModal" tabindex="-1" aria-labelledby="editarVeiculoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarVeiculoModalLabel">
+                        <i class="fas fa-edit"></i> Editar Veículo
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editar-veiculo-form">
+                        <input type="hidden" id="edit-veiculo-id">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit-veiculo-placa" class="form-label">
+                                        <i class="fas fa-id-card"></i> Placa
+                                    </label>
+                                    <input type="text" class="form-control" id="edit-veiculo-placa" required
+                                           placeholder="ABC-1234" maxlength="8">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit-veiculo-matricula" class="form-label">
+                                        <i class="fas fa-file-alt"></i> Matrícula
+                                    </label>
+                                    <input type="text" class="form-control" id="edit-veiculo-matricula" required
+                                           placeholder="Número da matrícula">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="edit-veiculo-ano" class="form-label">
+                                        <i class="fas fa-calendar"></i> Ano
+                                    </label>
+                                    <input type="number" class="form-control" id="edit-veiculo-ano" required
+                                           placeholder="2023" min="1900" max="2030">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="edit-veiculo-marca" class="form-label">
+                                        <i class="fas fa-tag"></i> Marca
+                                    </label>
+                                    <input type="text" class="form-control" id="edit-veiculo-marca" required
+                                           placeholder="Toyota, Honda, Ford...">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="edit-veiculo-modelo" class="form-label">
+                                        <i class="fas fa-car-side"></i> Modelo
+                                    </label>
+                                    <input type="text" class="form-control" id="edit-veiculo-modelo" required
+                                           placeholder="Corolla, Civic, Focus...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit-veiculo-tipo-propriedade" class="form-label">
+                                        <i class="fas fa-building"></i> Tipo de Propriedade
+                                    </label>
+                                    <select class="form-select" id="edit-veiculo-tipo-propriedade" required>
+                                        <option value="">Selecione o tipo</option>
+                                        <option value="CLIENTE">Cliente</option>
+                                        <option value="EMPRESA">Empresa</option>
+                                        <option value="BANCO">Banco</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="salvar-edicao-btn" onclick="veiculoService.salvarEdicao()">
+                        <i class="fas fa-save"></i> Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/api.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/veiculos.js"></script>
+
+    <script>
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sistema livre - qualquer um pode cadastrar veículos
+            console.log('Página de veículos carregada - acesso livre');
+
+            veiculoService.init();
+        });
+    </script>
+</body>
+</html>

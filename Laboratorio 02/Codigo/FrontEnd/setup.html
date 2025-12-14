@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Inicial - Sistema de Aluguel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .setup-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .setup-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            padding: 2rem;
+            text-align: center;
+        }
+        .btn-setup {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-setup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card setup-card">
+                    <div class="setup-header">
+                        <i class="fas fa-cog fa-3x mb-3"></i>
+                        <h2>Setup Inicial</h2>
+                        <p class="mb-0">Crie o primeiro administrador do sistema</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="setup-success" style="display: none;">
+                            <div class="alert alert-success text-center">
+                                <i class="fas fa-check-circle fa-2x mb-3"></i>
+                                <h4>Administrador criado com sucesso!</h4>
+                                <p>Você pode agora fazer login no sistema.</p>
+                                <a href="index.html" class="btn btn-setup text-white">
+                                    <i class="fas fa-sign-in-alt"></i> Ir para Login
+                                </a>
+                            </div>
+                        </div>
+
+                        <div id="setup-form">
+                            <form id="setup-admin-form">
+                                <div class="mb-3">
+                                    <label for="admin-nome" class="form-label">
+                                        <i class="fas fa-user"></i> Nome Completo
+                                    </label>
+                                    <input type="text" class="form-control" id="admin-nome" required 
+                                           placeholder="Digite seu nome completo">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="admin-email" class="form-label">
+                                        <i class="fas fa-envelope"></i> Email
+                                    </label>
+                                    <input type="email" class="form-control" id="admin-email" required 
+                                           placeholder="seu@email.com">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="admin-senha" class="form-label">
+                                        <i class="fas fa-lock"></i> Senha
+                                    </label>
+                                    <input type="password" class="form-control" id="admin-senha" required 
+                                           placeholder="Digite uma senha segura">
+                                    <div class="form-text">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle"></i> 
+                                            Senha padrão será "admin123" (pode ser alterada depois)
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="admin-ativo" checked>
+                                        <label class="form-check-label" for="admin-ativo">
+                                            <i class="fas fa-toggle-on"></i> Conta ativa
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-setup text-white">
+                                        <i class="fas fa-user-plus"></i> Criar Administrador
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="mt-4 text-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-shield-alt"></i> 
+                                    Este é o primeiro usuário do sistema e terá acesso total
+                                </small>
+                            </div>
+                        </div>
+
+                        <div id="setup-loading" style="display: none;">
+                            <div class="text-center">
+                                <div class="spinner-border text-primary mb-3" role="status">
+                                    <span class="visually-hidden">Criando...</span>
+                                </div>
+                                <h5>Criando administrador...</h5>
+                                <p class="text-muted">Aguarde um momento</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="index.html" class="text-white">
+                        <i class="fas fa-arrow-left"></i> Voltar ao Sistema
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/api.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script>
+        class SetupService {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                // Verificar se já existe um admin
+                this.checkExistingAdmin();
+                
+                // Event listeners
+                document.getElementById('setup-admin-form').addEventListener('submit', (e) => {
+                    this.handleSubmit(e);
+                });
+            }
+
+            async checkExistingAdmin() {
+                try {
+                    const admins = await apiService.listarAdmins();
+                    if (admins && admins.length > 0) {
+                        // Já existe admin, mostrar mensagem
+                        this.showExistingAdminMessage();
+                    }
+                } catch (error) {
+                    console.log('Sistema sem administradores, pode criar o primeiro');
+                }
+            }
+
+            showExistingAdminMessage() {
+                document.getElementById('setup-form').innerHTML = `
+                    <div class="alert alert-info text-center">
+                        <i class="fas fa-info-circle fa-2x mb-3"></i>
+                        <h4>Sistema já configurado!</h4>
+                        <p>Já existe um administrador no sistema.</p>
+                        <a href="index.html" class="btn btn-setup text-white">
+                            <i class="fas fa-sign-in-alt"></i> Ir para Login
+                        </a>
+                    </div>
+                `;
+            }
+
+            async handleSubmit(event) {
+                event.preventDefault();
+                
+                const formData = this.getFormData();
+                
+                if (!this.validateForm(formData)) {
+                    return;
+                }
+
+                this.showLoading();
+
+                try {
+                    const adminData = {
+                        nome: formData.nome,
+                        email: formData.email,
+                        ativo: formData.ativo
+                    };
+
+                    const result = await apiService.cadastrarAdmin(adminData);
+                    
+                    console.log('Administrador criado:', result);
+                    
+                    this.showSuccess();
+                    
+                } catch (error) {
+                    console.error('Erro ao criar administrador:', error);
+                    this.showError(error.message);
+                }
+            }
+
+            getFormData() {
+                return {
+                    nome: document.getElementById('admin-nome').value.trim(),
+                    email: document.getElementById('admin-email').value.trim(),
+                    senha: document.getElementById('admin-senha').value,
+                    ativo: document.getElementById('admin-ativo').checked
+                };
+            }
+
+            validateForm(data) {
+                if (!data.nome) {
+                    authService.showMessage('Por favor, insira o nome do administrador.', 'warning');
+                    return false;
+                }
+
+                if (!data.email) {
+                    authService.showMessage('Por favor, insira o email do administrador.', 'warning');
+                    return false;
+                }
+
+                if (!this.isValidEmail(data.email)) {
+                    authService.showMessage('Por favor, insira um email válido.', 'warning');
+                    return false;
+                }
+
+                return true;
+            }
+
+            isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            showLoading() {
+                document.getElementById('setup-form').style.display = 'none';
+                document.getElementById('setup-loading').style.display = 'block';
+            }
+
+            showSuccess() {
+                document.getElementById('setup-loading').style.display = 'none';
+                document.getElementById('setup-success').style.display = 'block';
+            }
+
+            showError(message) {
+                document.getElementById('setup-loading').style.display = 'none';
+                document.getElementById('setup-form').style.display = 'block';
+                
+                authService.showMessage('Erro ao criar administrador: ' + message, 'danger');
+            }
+        }
+
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            new SetupService();
+        });
+    </script>
+</body>
+</html>

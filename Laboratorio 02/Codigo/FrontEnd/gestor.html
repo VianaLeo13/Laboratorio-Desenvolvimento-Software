@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Aluguel de Veículos - Cadastro de Gestor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">
+                    <i class="fas fa-car"></i> Sistema de Aluguel
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">
+                                <i class="fas fa-home"></i> Início
+                            </a>
+                        </li>
+                        <!--<li class="nav-item">
+                            <a class="nav-link" href="admin.html">
+                                <i class="fas fa-cog"></i> Administração
+                            </a>
+                        </li><--->
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i> Sair
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="container mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1><i class="fas fa-user-plus"></i> Cadastro de Gestor</h1>
+                        <button class="btn btn-outline-secondary" onclick="window.location.href='index.html'">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-center">
+                                <i class="fas fa-user-tie"></i> Novo Gestor/Administrador
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="cadastro-gestor-form">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="gestor-nome" class="form-label">Nome Completo</label>
+                                            <input type="text" class="form-control" id="gestor-nome" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="gestor-email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="gestor-email" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="gestor-senha" class="form-label">Senha</label>
+                                            <input type="password" class="form-control" id="gestor-senha" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="gestor-confirmar-senha" class="form-label">Confirmar Senha</label>
+                                            <input type="password" class="form-control" id="gestor-confirmar-senha" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="gestor-tipo" class="form-label">Tipo de Gestor</label>
+                                            <select class="form-select" id="gestor-tipo" required>
+                                                <option value="">Selecione o tipo</option>
+                                                <option value="ADMIN">Administrador</option>
+                                                <option value="AGENTE">Agente (Banco/Empresa)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" id="agente-tipo-field" style="display: none;">
+                                        <div class="mb-3">
+                                            <label for="gestor-agente-tipo" class="form-label">Tipo de Agente</label>
+                                            <select class="form-select" id="gestor-agente-tipo">
+                                                <option value="">Selecione o tipo</option>
+                                                <option value="BANCO">Banco (Financia pedidos)</option>
+                                                <option value="EMPRESA_FINANCEIRA">Empresa Financeira (Financia pedidos)</option>
+                                                <option value="GESTOR">Gestor Comum (Pedidos diretos)</option>
+                                            </select>
+                                            <div class="mt-2">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    <strong>Tipos de Gestores:</strong><br>
+                                                    • <strong>Banco/Empresa Financeira:</strong> Gerenciam pedidos com contrato de crédito<br>
+                                                    • <strong>Gestor Comum:</strong> Gerencia pedidos diretos (sem financiamento)
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" id="agente-campos" style="display: none;">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="gestor-cnpj" class="form-label">CNPJ</label>
+                                            <input type="text" class="form-control" id="gestor-cnpj">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="gestor-telefone" class="form-label">Telefone</label>
+                                            <input type="text" class="form-control" id="gestor-telefone">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3" id="agente-endereco-field" style="display: none;">
+                                    <label for="gestor-endereco" class="form-label">Endereço</label>
+                                    <input type="text" class="form-control" id="gestor-endereco">
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="gestor-ativo" checked>
+                                        <label class="form-check-label" for="gestor-ativo">
+                                            Usuário ativo
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="button" class="btn btn-secondary me-md-2" onclick="limparFormulario()">
+                                        <i class="fas fa-eraser"></i> Limpar
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Cadastrar Gestor
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Gestores Cadastrados -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-users"></i> Gestores Cadastrados</h5>
+                            <button class="btn btn-outline-primary btn-sm" onclick="carregarGestores()">
+                                <i class="fas fa-refresh"></i> Atualizar
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="gestores-list">
+                                <div class="loading">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Carregando...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div class="modal fade" id="confirmacaoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-check-circle"></i> Confirmação
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmacao-texto">Tem certeza que deseja realizar esta ação?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmacao-botao">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/api.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/gestor.js"></script>
+    
+    <script>
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sistema livre - qualquer um pode criar gestores
+            console.log('Página de gestores carregada - acesso livre');
+            
+            gestorService.init();
+        });
+    </script>
+</body>
+</html>

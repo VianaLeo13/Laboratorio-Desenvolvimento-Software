@@ -1,0 +1,16 @@
+micronaut:
+  server:
+    cors:
+      enabled: false
+  security:
+    authentication: bearer
+    intercept-url-map:
+      - pattern: /auth/**
+        http-method: POST
+        access:
+          - isAnonymous()
+      - pattern: /**
+        http-method: OPTIONS
+        access:
+          - isAnonymous()
+    enabled: true

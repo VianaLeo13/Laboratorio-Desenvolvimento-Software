@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Aluguel de Veículos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-car"></i> Sistema de Aluguel
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showPage('home')">
+                                <i class="fas fa-home"></i> Início
+                            </a>
+                        </li>
+                        <li class="nav-item" id="nav-pedidos" style="display: none;">
+                            <a class="nav-link" href="#" onclick="showPage('pedidos')">
+                                <i class="fas fa-file-alt"></i> Meus Pedidos
+                            </a>
+                        </li>
+                        <li class="nav-item" id="nav-avaliacao" style="display: none;">
+                            <a class="nav-link" href="#" onclick="showPage('avaliacao')">
+                                <i class="fas fa-check-circle"></i> Avaliar Pedidos
+                            </a>
+                        </li>
+                        <li class="nav-item" id="nav-admin" style="display: none;">
+                            <a class="nav-link" href="#" onclick="showPage('admin')">
+                                <i class="fas fa-cog"></i> Administração
+                            </a>
+                        </li>
+                        <li class="nav-item" id="nav-gestor" style="display: none;">
+                            <a class="nav-link" href="gestor.html">
+                                <i class="fas fa-user-plus"></i> Cadastrar Gestor
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown" id="nav-user" style="display: none;">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> <span id="user-name"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="showPage('perfil')">
+                                    <i class="fas fa-user-edit"></i> Meu Perfil
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" onclick="logout()">
+                                    <i class="fas fa-sign-out-alt"></i> Sair
+                                </a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item" id="nav-login">
+                            <a class="nav-link" href="#" onclick="showPage('login')">
+                                <i class="fas fa-sign-in-alt"></i> Entrar
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="container mt-4">
+            <div id="content">
+                <!-- Home Page -->
+                <div id="home-page" class="page">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="jumbotron bg-light p-5 rounded">
+                                <h1 class="display-4">Sistema de Aluguel de Veículos</h1>
+                                <p class="lead">Gerencie seus pedidos de aluguel de forma simples e eficiente.</p>
+                                <hr class="my-4">
+                                <p>Faça login para acessar suas funcionalidades.</p>
+                                <div class="d-flex gap-3 flex-wrap">
+                                    <button id="btn-entrar" class="btn btn-primary btn-lg" onclick="showPage('login')">
+                                        <i class="fas fa-sign-in-alt"></i> Entrar
+                                    </button>
+                                    <button id="btn-cadastrar" class="btn btn-success btn-lg" onclick="showPage('register')">
+                                        <i class="fas fa-user-plus"></i> Cadastrar-se
+                                    </button>
+                                </div>
+
+                                <div class="mt-3">
+                                    <a id="btn-criar-gestor" href="gestor.html" class="btn btn-warning btn-lg text-white">
+                                        <i class="fas fa-user-plus"></i> Criar Gestor (Livre)
+                                    </a>
+                                </div>
+
+                                <div class="mt-2">
+                                    <a id="btn-cadastrar-veiculo" href="veiculos.html" class="btn btn-info btn-lg text-white">
+                                        <i class="fas fa-car"></i> Cadastrar Veículo (Livre)
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Acesso Rápido para Administradores -->
+                            <div class="row mt-4" id="quick-access" style="display: none;">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5><i class="fas fa-bolt"></i> Acesso Rápido</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <a href="admin.html" class="btn btn-primary w-100 mb-2 text-white">
+                                                        <i class="fas fa-cog"></i> Administração
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <a href="gestor.html" class="btn btn-success w-100 mb-2 text-white">
+                                                        <i class="fas fa-user-plus"></i> Cadastrar Gestor
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <a href="veiculos.html" class="btn btn-info w-100 mb-2 text-white">
+                                                        <i class="fas fa-car"></i> Cadastrar Veículo
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <button class="btn btn-secondary w-100 mb-2 text-white" onclick="showPage('perfil')">
+                                                        <i class="fas fa-user-edit"></i> Meu Perfil
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login Page -->
+                <div id="login-page" class="page" style="display: none;">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="text-center">
+                                        <i class="fas fa-sign-in-alt"></i> Login
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <form id="login-form">
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="email" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">Senha</label>
+                                            <input type="password" class="form-control" id="password" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="login-agente">
+                                                <label class="form-check-label" for="login-agente">
+                                                    <i class="fas fa-building"></i> Sou um agente (banco/empresa)
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-sign-in-alt"></i> Entrar
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <hr>
+                                    <div class="text-center">
+                                        <p>Não tem uma conta?</p>
+                                        <button class="btn btn-outline-primary" onclick="showPage('register')">
+                                            <i class="fas fa-user-plus"></i> Cadastrar-se
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Register Page -->
+                <div id="register-page" class="page" style="display: none;">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="text-center">
+                                        <i class="fas fa-user-plus"></i> Cadastro
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <form id="register-form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="reg-nome" class="form-label">Nome Completo</label>
+                                                    <input type="text" class="form-control" id="reg-nome" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="reg-cpf" class="form-label">CPF</label>
+                                                    <input type="text" class="form-control" id="reg-cpf" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="reg-endereco" class="form-label">Endereço</label>
+                                            <input type="text" class="form-control" id="reg-endereco" required>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="reg-rg" class="form-label">RG <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="reg-rg" required 
+                                                           placeholder="Necessário para contratos">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="reg-profissao" class="form-label">Profissão <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="reg-profissao" required 
+                                                           placeholder="Ex: Engenheiro, Professor">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="reg-email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="reg-email" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="reg-password" class="form-label">Senha</label>
+                                            <input type="password" class="form-control" id="reg-password" required>
+                                        </div>
+                                        
+                                        <!-- Seção de Rendimento Inicial (Opcional) -->
+                                        <div class="card bg-light mt-4">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">
+                                                    <i class="fas fa-money-bill"></i> Rendimento Inicial (Opcional)
+                                                </h6>
+                                                <small class="text-muted">Adicione pelo menos um rendimento para poder fazer contratos</small>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-7">
+                                                        <div class="mb-3">
+                                                            <label for="reg-empresa" class="form-label">Entidade Empregadora</label>
+                                                            <input type="text" class="form-control" id="reg-empresa" 
+                                                                   placeholder="Ex: Empresa XYZ Ltda">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="mb-3">
+                                                            <label for="reg-salario" class="form-label">Valor Mensal (R$)</label>
+                                                            <input type="number" class="form-control" id="reg-salario" 
+                                                                   min="0" step="0.01" placeholder="Ex: 3500.00">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fas fa-user-plus"></i> Cadastrar
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <hr>
+                                    <div class="text-center">
+                                        <p>Já tem uma conta?</p>
+                                        <button class="btn btn-outline-primary" onclick="showPage('login')">
+                                            <i class="fas fa-sign-in-alt"></i> Entrar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pedidos Page -->
+                <div id="pedidos-page" class="page" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-file-alt"></i> Meus Pedidos</h2>
+                        <button class="btn btn-primary" onclick="showNovoPedidoModal()">
+                            <i class="fas fa-plus"></i> Novo Pedido
+                        </button>
+                    </div>
+                    <div id="pedidos-list">
+                        <!-- Lista de pedidos será carregada aqui -->
+                    </div>
+                </div>
+
+                <!-- Avaliação Page -->
+                <div id="avaliacao-page" class="page" style="display: none;">
+                    <h2><i class="fas fa-check-circle"></i> Avaliar Pedidos</h2>
+                    <div id="pedidos-avaliacao">
+                        <!-- Lista de pedidos para avaliação será carregada aqui -->
+                    </div>
+                </div>
+
+                <!-- Admin Page -->
+                <div id="admin-page" class="page" style="display: none;">
+                    <h2><i class="fas fa-cog"></i> Administração</h2>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                                    <h5>Clientes</h5>
+                                    <p>Gerenciar clientes</p>
+                                    <button class="btn btn-primary" onclick="showPage('admin-clientes')">
+                                        Gerenciar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-car fa-3x text-success mb-3"></i>
+                                    <h5>Veículos</h5>
+                                    <p>Gerenciar automóveis</p>
+                                    <button class="btn btn-success" onclick="showPage('admin-veiculos')">
+                                        Gerenciar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-building fa-3x text-warning mb-3"></i>
+                                    <h5>Agentes</h5>
+                                    <p>Gerenciar agentes</p>
+                                    <button class="btn btn-warning" onclick="showPage('admin-agentes')">
+                                        Gerenciar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Perfil Page -->
+                <div id="perfil-page" class="page" style="display: none;">
+                    <h2><i class="fas fa-user-edit"></i> Meu Perfil</h2>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Informações Pessoais</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="perfil-form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="perfil-nome" class="form-label">Nome</label>
+                                                    <input type="text" class="form-control" id="perfil-nome">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="perfil-cpf" class="form-label">CPF</label>
+                                                    <input type="text" class="form-control" id="perfil-cpf" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="perfil-endereco" class="form-label">Endereço</label>
+                                            <input type="text" class="form-control" id="perfil-endereco">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="perfil-email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="perfil-email">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="perfil-rg" class="form-label">RG <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="perfil-rg" placeholder="Necessário para contratos">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="perfil-profissao" class="form-label">Profissão <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="perfil-profissao" placeholder="Necessário para contratos">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save"></i> Salvar Alterações
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Informações Adicionais</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="perfil-role" class="form-label">Função</label>
+                                        <input type="text" class="form-control" id="perfil-role" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="perfil-status" class="form-label">Status</label>
+                                        <input type="text" class="form-control" id="perfil-status" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card mt-3">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5><i class="fas fa-money-bill"></i> Rendimentos</h5>
+                                    <button class="btn btn-sm btn-success" onclick="showNovoRendimentoModal()">
+                                        <i class="fas fa-plus"></i> Adicionar
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div id="rendimentos-list">
+                                        <p class="text-muted">Carregando rendimentos...</p>
+                                    </div>
+                                    <small class="text-muted">* Máximo 3 rendimentos. Necessário pelo menos 1 para contratos.</small>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5>Alterar Senha</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="senha-form">
+                                        <div class="mb-3">
+                                            <label for="senha-atual" class="form-label">Senha Atual</label>
+                                            <input type="password" class="form-control" id="senha-atual">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="nova-senha" class="form-label">Nova Senha</label>
+                                            <input type="password" class="form-control" id="nova-senha">
+                                        </div>
+                                        <button type="submit" class="btn btn-warning">
+                                            <i class="fas fa-key"></i> Alterar Senha
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="novoPedidoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-plus"></i> Novo Pedido de Aluguel
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="novo-pedido-form">
+                        <div class="mb-3">
+                            <label for="pedido-automovel" class="form-label">Veículo</label>
+                            <select class="form-select" id="pedido-automovel" required>
+                                <option value="">Selecione um veículo</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="pedido-contrato-credito">
+                                <label class="form-check-label" for="pedido-contrato-credito">
+                                    Possui contrato de crédito
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3" id="banco-field" style="display: none;">
+                            <label for="pedido-banco" class="form-label">Banco</label>
+                            <select class="form-select" id="pedido-banco">
+                                <option value="">Selecione um banco</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="criarPedido()">
+                        <i class="fas fa-save"></i> Criar Pedido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Novo Rendimento -->
+    <div class="modal fade" id="novoRendimentoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-money-bill"></i> Novo Rendimento
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="novo-rendimento-form">
+                        <div class="mb-3">
+                            <label for="rendimento-empresa" class="form-label">Entidade Empregadora</label>
+                            <input type="text" class="form-control" id="rendimento-empresa" required 
+                                   placeholder="Ex: Empresa XYZ Ltda">
+                        </div>
+                        <div class="mb-3">
+                            <label for="rendimento-valor" class="form-label">Valor Mensal (R$)</label>
+                            <input type="number" class="form-control" id="rendimento-valor" required 
+                                   min="0" step="0.01" placeholder="Ex: 3500.00">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="criarRendimento()">
+                        <i class="fas fa-save"></i> Adicionar Rendimento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Pedido -->
+    <div class="modal fade" id="editarPedidoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-edit"></i> Editar Pedido
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editar-pedido-form">
+                        <input type="hidden" id="edit-pedido-id">
+                        <div class="mb-3">
+                            <label for="edit-pedido-automovel" class="form-label">Veículo</label>
+                            <select class="form-select" id="edit-pedido-automovel" required>
+                                <option value="">Selecione um veículo</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="edit-pedido-contrato-credito">
+                                <label class="form-check-label" for="edit-pedido-contrato-credito">
+                                    Possui contrato de crédito
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3" id="edit-banco-field" style="display: none;">
+                            <label for="edit-pedido-banco" class="form-label">Banco/Empresa Financeira</label>
+                            <select class="form-select" id="edit-pedido-banco">
+                                <option value="">Selecione um banco ou empresa financeira</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="atualizarPedido()">
+                        <i class="fas fa-save"></i> Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Modificar Pedido Completo (para gestores) -->
+    <div class="modal fade" id="modificarPedidoModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-cogs"></i> Modificar Pedido (Gestor)
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="modificar-pedido-form">
+                        <input type="hidden" id="mod-pedido-id">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="mod-pedido-automovel" class="form-label">Veículo</label>
+                                    <select class="form-select" id="mod-pedido-automovel">
+                                        <option value="">Selecione um veículo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="mod-pedido-status" class="form-label">Status</label>
+                                    <select class="form-select" id="mod-pedido-status">
+                                        <option value="PENDENTE">Pendente</option>
+                                        <option value="ANALISE_FINANCEIRA">Análise Financeira</option>
+                                        <option value="APROVADO">Aprovado</option>
+                                        <option value="REJEITADO">Rejeitado</option>
+                                        <option value="CANCELADO">Cancelado</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="mod-pedido-contrato-credito">
+                                        <label class="form-check-label" for="mod-pedido-contrato-credito">
+                                            Possui contrato de crédito
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6" id="mod-banco-field" style="display: none;">
+                                <div class="mb-3">
+                                    <label for="mod-pedido-banco" class="form-label">Banco/Empresa Financeira</label>
+                                    <select class="form-select" id="mod-pedido-banco">
+                                        <option value="">Selecione</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Tipos de Gestores:</strong><br>
+                            • <strong>Gestores Comuns:</strong> Gerenciam pedidos sem financiamento<br>
+                            • <strong>Bancos/Empresas Financeiras:</strong> Gerenciam pedidos com contrato de crédito
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="modificarPedidoCompleto()">
+                        <i class="fas fa-save"></i> Modificar Pedido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmação Financeira -->
+    <div class="modal fade" id="confirmacaoFinanceiraModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title">
+                        <i class="fas fa-chart-line"></i> Análise Financeira - Pedido #<span id="pedido-id-confirmacao"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6><i class="fas fa-user"></i> Dados do Cliente</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Nome:</strong> <span id="cliente-nome-confirmacao"></span></p>
+                                    <p><strong>CPF:</strong> <span id="cliente-cpf-confirmacao"></span></p>
+                                    <p><strong>RG:</strong> <span id="cliente-rg-confirmacao"></span></p>
+                                    <p><strong>Profissão:</strong> <span id="cliente-profissao-confirmacao"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6><i class="fas fa-money-bill-wave"></i> Informações Financeiras</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="rendas-confirmacao">
+                                        <div class="text-center text-muted">
+                                            <i class="fas fa-spinner fa-spin"></i> Carregando rendas...
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="alert alert-info">
+                                        <span id="analise-financeira"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6><i class="fas fa-clipboard-list"></i> Observações da Avaliação</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-floating">
+                                        <textarea class="form-control" id="observacoes-confirmacao" style="height: 100px" placeholder="Digite suas observações sobre a análise financeira..."></textarea>
+                                        <label for="observacoes-confirmacao">Observações da análise financeira</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btn-rejeitar-confirmacao">
+                        <i class="fas fa-times"></i> Rejeitar Pedido
+                    </button>
+                    <button type="button" class="btn btn-success" id="btn-aprovar-confirmacao">
+                        <i class="fas fa-check"></i> Aprovar Pedido
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Visualizar Contrato -->
+    <div class="modal fade" id="contratoModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-file-contract"></i> Detalhes do Contrato de Aluguel
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6><i class="fas fa-info-circle"></i> Informações do Contrato</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Número do Contrato:</strong></label>
+                                                <p id="contrato-numero" class="form-control-plaintext"></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Status:</strong></label>
+                                                <p id="contrato-status" class="form-control-plaintext"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Valor Mensal:</strong></label>
+                                                <p id="contrato-valor" class="form-control-plaintext text-success fs-5"></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Prazo:</strong></label>
+                                                <p id="contrato-prazo" class="form-control-plaintext"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Data de Início:</strong></label>
+                                                <p id="contrato-inicio" class="form-control-plaintext"></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label"><strong>Data de Fim:</strong></label>
+                                                <p id="contrato-fim" class="form-control-plaintext"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label"><strong>Observações:</strong></label>
+                                        <div id="contrato-observacoes" class="form-control-plaintext bg-light p-3 rounded" style="min-height: 80px; white-space: pre-wrap;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6><i class="fas fa-user"></i> Cliente</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Nome:</strong> <span id="cliente-nome"></span></p>
+                                    <p><strong>CPF:</strong> <span id="cliente-cpf"></span></p>
+                                    <p><strong>Email:</strong> <span id="cliente-email"></span></p>
+                                </div>
+                            </div>
+                            
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h6><i class="fas fa-car"></i> Veículo</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Modelo:</strong> <span id="veiculo-modelo"></span></p>
+                                    <p><strong>Placa:</strong> <span id="veiculo-placa"></span></p>
+                                    <p><strong>Ano:</strong> <span id="veiculo-ano"></span></p>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h6><i class="fas fa-building"></i> Agente Responsável</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Nome:</strong> <span id="agente-nome"></span></p>
+                                    <p><strong>Tipo:</strong> <span id="agente-tipo"></span></p>
+                                    <p><strong>Email:</strong> <span id="agente-email"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="imprimirContrato()">
+                        <i class="fas fa-print"></i> Imprimir Contrato
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/api.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/pedidos.js"></script>
+    <script src="scripts/rendimentos.js"></script>
+    <script src="scripts/admin.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/debug.js"></script>
+</body>
+</html>

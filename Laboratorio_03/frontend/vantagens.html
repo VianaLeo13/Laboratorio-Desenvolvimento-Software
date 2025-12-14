@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vantagens - Moeda Estudantil</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="vantagens.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="scripts/auth.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="scripts/email-service.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="vantagens-header-container">
+            <div class="imagem"><img src="imagens/Moedalogo.png" alt="Moeda Estudantil Logo"></div>
+            
+            <div class="vantagens-nav-wrapper">
+                <nav class="vantagens-nav">
+                    <a href="index.html" class="nav-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span>Gerenciamento</span>
+                    </a>
+                    <a href="vantagens.html" class="nav-link active">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="8" r="7"></circle>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                        </svg>
+                        <span>Vantagens</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Seção de Cadastro de Vantagem (para Empresas) -->
+        <section id="cadastro-vantagem-section" class="action-card">
+            <h2>Cadastrar Nova Vantagem</h2>
+            <form id="vantagem-form">
+                <div class="form-group">
+                    <label for="vantagem-empresa-select">Selecione a Empresa</label>
+                    <select id="vantagem-empresa-select" name="empresaId" required>
+                        <option value="">Carregando empresas...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="vantagem-nome">Nome da Vantagem</label>
+                    <input type="text" id="vantagem-nome" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="vantagem-descricao">Descrição</label>
+                    <textarea id="vantagem-descricao" name="descricao" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="vantagem-foto">URL da Foto</label>
+                    <input type="url" id="vantagem-foto" name="fotoUrl" placeholder="https://exemplo.com/imagem.png" required>
+                </div>
+                <div class="form-group">
+                    <label for="vantagem-custo">Custo em Moedas</label>
+                    <input type="number" id="vantagem-custo" name="custoMoedas" step="0.01" min="0" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Cadastrar Vantagem</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Seção de Listagem de Vantagens (para Alunos) -->
+        <section id="listagem-vantagens-section">
+            <h2 class="section-title">Vantagens Disponíveis</h2>
+            <div id="vantagens-list" class="data-grid">
+                <!-- Cards de vantagens serão inseridos aqui pelo JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL DE CONFIRMAÇÃO DE RESGATE -->
+    <div id="resgate-confirm-modal" class="modal" aria-hidden="true">
+        <div class="modal-overlay" tabindex="-1" data-close></div>
+        <div class="modal-content" role="dialog" aria-modal="true">
+            <button class="modal-close-btn" data-close aria-label="Fechar modal">&times;</button>
+            <h2>Confirmar Resgate</h2>
+            <p>Você tem certeza que deseja resgatar a vantagem <strong id="resgate-vantagem-nome"></strong> por <strong id="resgate-vantagem-custo"></strong> moedas?</p>
+            
+            <div class="form-group">
+                <label for="resgate-aluno-select">Selecione o Aluno</label>
+                <select id="resgate-aluno-select" required>
+                    <option value="">Carregando alunos...</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" data-close>Cancelar</button>
+                <button type="button" id="confirm-resgate-btn" class="btn btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container para Toasts -->
+    <div id="toast-container"></div>
+
+    <script src="scripts/config.js"></script>
+    <script src="scripts/vantagens.js"></script>
+    <script>
+        // Verificar autenticação ao carregar a página
+        document.addEventListener('DOMContentLoaded', async function() {
+            const userRole = AuthService.getRole();
+            const userInfo = AuthService.getUserInfo();
+            const cadastroSection = document.getElementById('cadastro-vantagem-section');
+            const listagemSection = document.getElementById('listagem-vantagens-section');
+            const navWrapper = document.querySelector('.vantagens-nav-wrapper');
+
+            // Criar header personalizado baseado no tipo de usuário
+            if (navWrapper && userRole === 'ALUNO') {
+                // Para alunos, criar um header especial com saldo de moedas
+                navWrapper.innerHTML = `
+                    <div class="user-info-panel">
+                        <div class="user-avatar">👤</div>
+                        <div class="user-info-text">
+                            <div class="user-name">${userInfo?.nome || 'Aluno'}</div>
+                            <div class="user-balance">
+                                <span class="coin-icon">💰</span>
+                                <span id="user-balance-amount">0.00</span> moedas
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <nav class="vantagens-nav">
+                        <a href="vantagens.html" class="nav-link active">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="8" r="7"></circle>
+                                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                            </svg>
+                            <span>Vantagens</span>
+                        </a>
+                    </nav>
+                    
+                    <button class="logout-btn" onclick="AuthService.logout(); window.location.href='login.html';">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" x2="9" y1="12" y2="12"></line>
+                        </svg>
+                        Sair
+                    </button>
+                `;
+
+                // Buscar e exibir saldo do aluno
+                try {
+                    const response = await fetch(`${API_BASE_URL}/alunos/${userInfo.userId}/saldo`, {
+                        headers: AuthService.getToken() ? {
+                            'Authorization': `Bearer ${AuthService.getToken()}`
+                        } : {}
+                    });
+                    
+                    if (response.ok) {
+                        const saldo = await response.json(); // Resposta direta do saldo como número
+                        const balanceElement = document.getElementById('user-balance-amount');
+                        if (balanceElement) {
+                            balanceElement.textContent = (saldo || 0).toFixed(2);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar saldo:', error);
+                }
+            }
+
+            // Configurar visibilidade das seções baseado no papel do usuário
+            if (userRole === 'EMPRESA') {
+                // Empresa pode cadastrar e visualizar vantagens
+                if (cadastroSection) cadastroSection.style.display = 'block';
+                if (listagemSection) listagemSection.style.display = 'block';
+                // Manter navegação padrão para empresa
+                const gerenciamentoLink = document.querySelector('a[href="index.html"]');
+                if (gerenciamentoLink) gerenciamentoLink.style.display = 'none';
+            } else if (userRole === 'ALUNO') {
+                // Aluno só pode visualizar vantagens
+                if (cadastroSection) cadastroSection.style.display = 'none';
+                if (listagemSection) listagemSection.style.display = 'block';
+            } else if (userRole === 'PROFESSOR') {
+                // Professor pode visualizar vantagens e acessar gerenciamento
+                if (cadastroSection) cadastroSection.style.display = 'none';
+                if (listagemSection) listagemSection.style.display = 'block';
+                // Manter navegação padrão para professor
+            }
+
+            // Para outros tipos de usuário (não aluno), manter botão de logout simples
+            if (userRole !== 'ALUNO' && navWrapper) {
+                const logoutBtn = document.createElement('button');
+                logoutBtn.className = 'logout-btn';
+                logoutBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" x2="9" y1="12" y2="12"></line>
+                    </svg>
+                    ${userInfo?.nome || 'Usuário'} - Sair
+                `;
+                logoutBtn.addEventListener('click', () => {
+                    AuthService.logout();
+                    window.location.href = 'login.html';
+                });
+                navWrapper.appendChild(logoutBtn);
+            }
+        });
+    </script>
+</body>
+</html>
