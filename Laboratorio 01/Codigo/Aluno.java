@@ -35,12 +35,14 @@ public class Aluno extends Usuario {
     public double setMensalidade(double mensalidade) {
         return this.A_mensalidade = mensalidade;
     }
-    
+
     public double getA_mensalidade() {
         return A_mensalidade;
     }
 
     public void addDisciplina(Disciplina disciplina) throws Exception{
+        //  Use exceções mais específicas, por exemplo, “DisciplinaJaExisteException” ou “LimiteDeDisciplinaAtingidoException” em vez de lançar uma Exception genérica
+
         if(A_disciplinasObrigatorias.contains(disciplina) || A_disciplinasOptativas.contains(disciplina)){
             throw new Exception("Disciplina já existente");
         }else {
@@ -63,6 +65,8 @@ public class Aluno extends Usuario {
     }
 
     public void removerDisciplina(Disciplina disciplina) throws Exception {
+        // retorne um boolean dizendo se a remoção deu certo ou não, em vez de só imprimir no console
+
         if (A_disciplinasObrigatorias.remove(disciplina) || A_disciplinasOptativas.remove(disciplina)) {
             disciplina.removerAluno(this); // apenas avisa a disciplina
         } else {
@@ -70,4 +74,9 @@ public class Aluno extends Usuario {
         }
     }
 
+    // O atributo “A_disciplina” não está sendo usado em lugar nenhum.
+    // Acho que pode ser um resto de código antigo. Se não tiver mais utilidade, vale remover pra deixar a classe mais limpa
+
+    // Os métodos “setDisciplinasObrigatorias” e “setDisciplinasOptativas” na verdade adicionam disciplinas, não “setam” a lista toda.
+    // Talvez renomear pra “addDisciplinaObrigatoria” e “addDisciplinaOptativa” deixaria o código mais intuitivo.
 }
